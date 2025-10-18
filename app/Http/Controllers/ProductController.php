@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Product;
+use App\Models\Category;
+use App\HTTP\Requests\StoreProductRequest;
 
 use Illuminate\Http\Request;
 

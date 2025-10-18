@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layout')
 
 @section('content')
 <div class="container">
@@ -29,8 +29,8 @@
         <div class="mb-3">
             <label>Type</label>
             <select name="type" class="form-control" required>
-                <option value="in">Entry</option>
-                <option value="out">Exit</option>
+                <option value="entry">Entry</option>
+                <option value="exit">Exit</option>
             </select>
         </div>
 

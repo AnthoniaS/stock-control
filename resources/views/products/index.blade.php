@@ -16,6 +16,7 @@
                 <th>Name</th>
                 <th>Category</th>
                 <th>Price</th>
+                <th>Stock</th>
                 <th>Expiration</th>
                 <th>Actions</th>
             </tr>
@@ -27,6 +28,7 @@
                 <td>{{ $product->name }}</td>
                 <td>{{ $product->category->name }}</td>
                 <td>{{ $product->price }}</td>
+                <td>{{ $product->stock }}</td>
                 <td>{{ $product->expiration_date ?? '-' }}</td>
                 <td>
                     <a href="{{ route('products.edit', $product->id) }}" class="btn btn-primary btn-sm">Edit</a>

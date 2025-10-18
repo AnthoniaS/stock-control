@@ -11,5 +11,5 @@ Route::resource('products', ProductController::class);
 Route::resource('movements', MovementController::class);
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('products.index');
 });

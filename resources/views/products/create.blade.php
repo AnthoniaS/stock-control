@@ -55,6 +55,11 @@
             @error('photo')<small class="text-danger">{{ $message }}</small>@enderror
         </div>
 
+        <div class="mb-3">
+            <label for="stock" class="form-label">Stock</label>
+            <input type="number" class="form-control" id="stock" name="stock" value="{{ old('stock', $product->stock ?? 0) }}" min="0" required>
+        </div>
+        
         <button type="submit" class="btn btn-success">Save</button>
         <a href="{{ route('products.index') }}" class="btn btn-secondary">Back</a>
     </form>

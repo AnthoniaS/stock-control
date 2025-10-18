@@ -11,7 +11,7 @@ class StoreProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -27,6 +27,7 @@ class StoreProductRequest extends FormRequest
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
+            'stock' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
             'sku' => 'required|string|unique:products,sku,' . $productId,
             'photo' => 'nullable|image|mimes:jpg,png|max:5120', // max 5MB

@@ -11,7 +11,7 @@ class StoreMovementRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,7 @@ class StoreMovementRequest extends FormRequest
     {
         return [
             'product_id' => 'required|exists:products,id',
-            'type' => 'required|in:in,out',
+            'type' => 'required|in:entry,exit',
             'quantity' => 'required|integer|min:1',
             'user' => 'nullable|string|max:100',
         ];
