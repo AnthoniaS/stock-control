@@ -13,7 +13,7 @@ class MovementController extends Controller
 
     public function index()
     {
-        $movements = Movement::with('product')->latest()->paginate(10);
+        $movements = Movement::with('product')->latest()->get();
         return view('movements.index', compact('movements'));
     }
     public function create()

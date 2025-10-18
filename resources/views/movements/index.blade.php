@@ -32,7 +32,5 @@
             @endforeach
         </tbody>
     </table>
-
-    {{ $movements->links() }}
 </div>
 @endsection
