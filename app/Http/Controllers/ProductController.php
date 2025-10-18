@@ -49,11 +49,6 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
-    public function show(string $id)
-    {
-        //
-    }
-
     public function edit(Product $product)
     {
         $categories = Category::all();
@@ -90,7 +85,7 @@ class ProductController extends Controller
     public function topExits()
     {
         $products = Product::withCount(['movements as exits_count' => function($query) {
-            $query->where('type', 'exit'); // conta apenas saídas
+            $query->where('type', 'exit');
         }])->orderByDesc('exits_count')->take(10)->get();
 
         return view('products.top_exits', compact('products'));

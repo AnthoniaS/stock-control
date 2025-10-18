@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Movement;
 use App\HTTP\Requests\StoreMovementRequest;
+use Illuminate\Support\Facades\DB;
 
 class MovementController extends Controller
 {
@@ -23,54 +24,37 @@ class MovementController extends Controller
 
     public function store(StoreMovementRequest $request)
     {
-        $product = Product::find($request->product_id);
-
-        if ($request->type === 'exit' && $product->stock < $request->quantity) {
-            return back()->withErrors(['quantity' => 'Not enough stock available.']);
+        try {
+            $request->validate([
+                'product_id' => 'required|exists:products,id',
+                'type' => 'required|in:entry,exit',
+                'quantity' => 'required|integer|min:1',
+            ]);
+        
+            DB::transaction(function () use ($request) {
+                $product = Product::lockForUpdate()->find($request->product_id);
+        
+                if ($request->type === 'exit') {
+                    if ($product->stock < $request->quantity) {
+                        throw new \Exception('Not enough stock available.');
+                    }
+                    $product->stock -= $request->quantity;
+                } else {
+                    $product->stock += $request->quantity;
+                }
+        
+                $product->save();
+        
+                Movement::create([
+                    'product_id' => $product->id,
+                    'type' => $request->type,
+                    'quantity' => $request->quantity,
+                    'user' => auth()->user()->name ?? 'Unknown',
+                ]);
+            });
+            return redirect()->route('movements.index')->with('success', 'Movement recorded successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
-        
-        $movement = new Movement($request->all());
-        $movement->save();
-        
-        if ($request->type === 'in') {
-            $product->stock += $request->quantity;
-        } else {
-            $product->stock -= $request->quantity;
-        }
-        
-        $product->save();
-        return redirect()->route('movements.index')->with('success', 'Movement recorded successfully.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

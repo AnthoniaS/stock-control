@@ -39,10 +39,40 @@
                     <li class="nav-item"><a class="nav-link" href="{{ route('movements.index') }}">Movements</a></li>
                 </ul>
             </div>
+            <div class="ms-auto">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
+                </form>
+            </div>
         </div>
     </nav>
 
     <main class="container">
+        @if(session('error'))
+        <!-- Modal -->
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{ session('error') }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <script>
+            var myModal = new bootstrap.Modal(document.getElementById('errorModal'))
+            myModal.show();
+        </script>
+        @endif
         @yield('content')
         @yield('scripts')
 
@@ -52,7 +82,7 @@
         <p>Stock Control System © {{ date('Y') }}</p>
     </footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
