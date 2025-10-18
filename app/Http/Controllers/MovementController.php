@@ -11,23 +11,41 @@ class MovementController extends Controller
      */
     public function index()
     {
-        //
+        $movements = Movement::with('product')->latest()->paginate(10);
+        return view('movements.index', compact('movements'));
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $products = Product::all();
+        return view('movements.create', compact('products'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreMovementRequest $request)
     {
-        //
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'type' => 'required|in:in,out',
+            'quantity' => 'required|integer|min:1',
+            'user' => 'nullable|string|max:100'
+        ]);
+
+        $movement = new Movement($request->all());
+        $movement->save();
+
+        $product = Product::find($request->product_id);
+
+        if ($request->type === 'in') {
+            $product->stock += $request->quantity;
+        } else {
+            if ($product->stock < $request->quantity) {
+                return back()->withErrors(['quantity' => 'Not enough stock available.']);
+            }
+            $product->stock -= $request->quantity;
+        }
+
+        $product->save();
+
+        return redirect()->route('movements.index')->with('success', 'Movement recorded successfully.');
     }
 
     /**
