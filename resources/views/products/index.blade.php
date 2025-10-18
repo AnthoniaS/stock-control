@@ -3,7 +3,12 @@
 @section('content')
 <div class="container mt-4">
     <h2>Products</h2>
-    <a href="{{ route('products.create') }}" class="btn btn-success mb-2">New Product</a>
+    <div class="mb-3">
+        <a href="{{ route('products.create') }}" class="btn btn-success mb-2">New Product</a>
+        <a href="{{ route('report.stock') }}" class="btn btn-secondary mb-2">Stock Report</a>
+        <a href="{{ route('report.topExits') }}" class="btn btn-secondary mb-2">Top 10 Exits</a>
+    </div>
+
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -12,6 +17,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>Photo</th>
                 <th>SKU</th>
                 <th>Name</th>
                 <th>Category</th>
@@ -24,10 +30,17 @@
         <tbody>
             @foreach($products as $product)
             <tr>
+                <td>
+                    @if($product->photo)
+                        <img src="{{ asset('storage/products/' . $product->photo) }}" alt="{{ $product->name }}" width="60">
+                    @else
+                        -
+                    @endif
+                </td>
                 <td>{{ $product->sku }}</td>
                 <td>{{ $product->name }}</td>
                 <td>{{ $product->category->name }}</td>
-                <td>{{ $product->price }}</td>
+                <td>{{ number_format($product->price, 2) }}</td>
                 <td>{{ $product->stock }}</td>
                 <td>{{ $product->expiration_date ?? '-' }}</td>
                 <td>

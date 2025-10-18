@@ -56,7 +56,7 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Photo (optional, JPG/PNG max 5MB)</label>
+            <label class="form-label">Photo (JPG/PNG max 5MB)</label>
             @if($product->photo)
                 <div class="mb-2">
                     <img src="{{ asset('storage/' . $product->photo) }}" alt="Product Photo" width="100">
@@ -65,7 +65,7 @@
             <input type="file" name="photo" class="form-control">
             @error('photo')<small class="text-danger">{{ $message }}</small>@enderror
         </div>
-        
+
         <div class="mb-3">
             <label for="stock" class="form-label">Stock</label>
             <input type="number" class="form-control" id="stock" name="stock" value="{{ old('stock', $product->stock) }}" min="0" required>

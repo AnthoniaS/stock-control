@@ -44,6 +44,8 @@
 
     <main class="container">
         @yield('content')
+        @yield('scripts')
+
     </main>
 
     <footer>

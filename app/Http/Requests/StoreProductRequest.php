@@ -30,7 +30,7 @@ class StoreProductRequest extends FormRequest
             'stock' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
             'sku' => 'required|string|unique:products,sku,' . $productId,
-            'photo' => 'nullable|image|mimes:jpg,png|max:5120', // max 5MB
+            'photo' => 'required|image|mimes:jpg,png|max:5120', 
             'expiration_date' => 'nullable|date|after_or_equal:today',
         ];
     }

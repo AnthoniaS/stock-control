@@ -50,7 +50,7 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Photo (optional, JPG/PNG max 5MB)</label>
+            <label class="form-label">Photo (JPG/PNG max 5MB)</label>
             <input type="file" name="photo" class="form-control">
             @error('photo')<small class="text-danger">{{ $message }}</small>@enderror
         </div>

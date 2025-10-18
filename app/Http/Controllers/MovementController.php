@@ -23,29 +23,22 @@ class MovementController extends Controller
 
     public function store(StoreMovementRequest $request)
     {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'type' => 'required|in:entry,exit',
-            'quantity' => 'required|integer|min:1',
-            'user' => 'nullable|string|max:100'
-        ]);
-
-        $movement = new Movement($request->all());
-        $movement->save();
-
         $product = Product::find($request->product_id);
 
-        if ($request->type === 'entry') {
+        if ($request->type === 'exit' && $product->stock < $request->quantity) {
+            return back()->withErrors(['quantity' => 'Not enough stock available.']);
+        }
+        
+        $movement = new Movement($request->all());
+        $movement->save();
+        
+        if ($request->type === 'in') {
             $product->stock += $request->quantity;
         } else {
-            if ($product->stock < $request->quantity) {
-                return back()->withErrors(['quantity' => 'Not enough stock available.']);
-            }
             $product->stock -= $request->quantity;
         }
-
+        
         $product->save();
-
         return redirect()->route('movements.index')->with('success', 'Movement recorded successfully.');
     }
 

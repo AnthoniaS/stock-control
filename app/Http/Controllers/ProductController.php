@@ -26,7 +26,10 @@ class ProductController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('photo')){
-            $data['photo'] = $request->file('photo')->store('products', 'public');
+            $file = $request->file('photo');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/products', $filename);
+            $data['photo'] = $filename;
         }
         Product::create($data);
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
@@ -48,7 +51,10 @@ class ProductController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('photo')){
-            $data['photo'] = $request->file('photo')->store('products', 'public');
+            $file = $request->file('photo');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/products', $filename); // salva em storage/app/public/products
+            $data['photo'] = $filename;
         }
         $product->update($data);
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');
@@ -59,4 +65,21 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
+
+    public function stockReport()
+    {
+        $products = Product::with('category')->get();
+
+        return view('products.stock_report', compact('products'));
+    }
+
+    public function topExits()
+    {
+        $products = Product::withCount(['movements as exits_count' => function($query) {
+            $query->where('type', 'exit'); // conta apenas saídas
+        }])->orderByDesc('exits_count')->take(10)->get();
+
+        return view('products.top_exits', compact('products'));
+    }
+
 }
