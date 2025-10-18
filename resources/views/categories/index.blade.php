@@ -3,6 +3,10 @@
 @section('content')
 <div class="container mt-4">
     <h2>Categories</h2>
+    <form method="GET" action="{{ route('categories.index') }}" class="mb-3 d-flex" role="search">
+        <input type="text" name="search" value="{{ request('search') }}" class="form-control me-2" placeholder="Search by name">
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+    </form>
     <a href="{{ route('categories.create') }}" class="btn btn-success mb-2">New Category</a>
 
     @if(session('success'))

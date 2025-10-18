@@ -4,15 +4,29 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use App\HTTP\Requests\StoreProductRequest;
-
+use Barryvdh\DomPDF\Facade\Pdf;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category')->get();
-        return view('products.index', compact('products'));
+        $search = $request->get('search');
+        $categoryId = $request->get('category_id');
+    
+        $products = Product::when($search, function($query, $search) {
+                return $query->where('name', 'like', "%{$search}%");
+            })
+            ->when($categoryId, function($query, $categoryId) {
+                return $query->where('category_id', $categoryId);
+            })
+            ->orderBy('name', 'asc')
+            ->get();
+    
+        $categories = Category::orderBy('name')->get();
+    
+        return view('products.index', compact('products', 'search', 'categories', 'categoryId'));
     }
 
     public function create()
@@ -53,7 +67,7 @@ class ProductController extends Controller
         if ($request->hasFile('photo')){
             $file = $request->file('photo');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public/products', $filename); // salva em storage/app/public/products
+            $file->storeAs('public/products', $filename);
             $data['photo'] = $filename;
         }
         $product->update($data);
@@ -82,4 +96,11 @@ class ProductController extends Controller
         return view('products.top_exits', compact('products'));
     }
 
+    public function downloadPdf()
+    {
+        $products = Product::all();
+
+        $pdf = Pdf::loadView('products.stock_pdf', compact('products'));
+        return $pdf->download('stock-report.pdf');
+    }
 }

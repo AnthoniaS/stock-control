@@ -3,6 +3,10 @@
 @section('content')
 <div class="container mt-4">
     <h1>Stock Report</h1>
+    <a href="{{ route('stock-report.pdf') }}" class="btn btn-secondary mb-3" target="_blank">
+        Download PDF
+    </a>
+
 
     <table class="table table-bordered table-striped">
         <thead>

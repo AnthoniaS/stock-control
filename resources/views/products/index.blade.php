@@ -13,6 +13,21 @@
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
+    <form method="GET" action="{{ route('products.index') }}" class="mb-3 d-flex gap-2">
+        <input type="text" name="search" class="form-control w-auto" placeholder="Search by name" value="{{ $search }}">
+        
+        <select name="category_id" class="form-select w-auto">
+            <option value="">All Categories</option>
+            @foreach($categories as $category)
+                <option value="{{ $category->id }}" {{ $categoryId == $category->id ? 'selected' : '' }}>
+                    {{ $category->name }}
+                </option>
+            @endforeach
+        </select>
+
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+
 
     <table class="table table-striped">
         <thead>

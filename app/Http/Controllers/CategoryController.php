@@ -9,9 +9,14 @@ use App\HTTP\Requests\StoreCategoryRequest;
 class CategoryController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::all();
+        if ($request->filled('search')) {
+            $categories = Category::where('name', 'like', '%'.$request->search.'%')->get();
+        } else {
+            $categories = Category::all();
+        }
+
         return view('categories.index', compact('categories'));
     }
 
